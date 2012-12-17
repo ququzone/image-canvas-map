@@ -132,18 +132,16 @@
                                 }
                                 shape = this.getAttribute('shape').toLowerCase().substr(0,4);
                                 if(shape === 'poly') {
-                                    for(var i = 0; i < coords.length / 2; i+=2) {
-                                        context = canvas.getContext('2d');
-                                        context.beginPath();
-                                        context.moveTo(coords[0], coords[1]);
-                                        for(i=2; i < coords.length; i+=2) {
-                                            context.lineTo(coords[i], coords[i+1]);
-                                        }
-                                        context.lineWidth = 2;
-                                        context.closePath();
-                                        context.strokeStyle = 'rgb(100,149,237)';
-                                        context.stroke();
+                                    context = canvas.getContext('2d');
+                                    context.beginPath();
+                                    context.moveTo(coords[0], coords[1]);
+                                    for(i=2; i < coords.length; i+=2) {
+                                        context.lineTo(coords[i], coords[i+1]);
                                     }
+                                    context.lineWidth = 2;
+                                    context.closePath();
+                                    context.strokeStyle = 'rgb(100,149,237)';
+                                    context.stroke();
                                 } else if(shape === 'rect') {
                                     context = canvas.getContext('2d');
                                     context.beginPath();
