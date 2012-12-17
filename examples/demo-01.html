@@ -2,9 +2,8 @@
 <meta charset="utf-8">
 <head>
 <!--[if IE]><script type="text/javascript" src="excanvas.compiled.js"></script><![endif]-->
-<script type="text/javascript"
-    src="http://ajax.googleapis.com/ajax/libs/jquery/1.5.2/jquery.min.js"></script>
-<script type="text/javascript" src="../jquery.imagecanvasmap.js"></script>
+<script type="text/javascript" src="jquery-1.8.3.min.js"></script>
+<script type="text/javascript" src="../jquery.imagecanvasmap.min.js"></script>
 <script type="text/javascript">
     $(document).ready(function() {
         $('.map').imagecanvasmap({
@@ -18,7 +17,11 @@
 </head>
 <body>
     <div>
-        <a href="#">测试</a> <img src="test.jpg" class="map">
+        <a href="#">test</a> <img src="test.jpg" class="map" usemap="#map">
+        <map name="map">
+            <area shape="rect" coords="50, 50, 120, 120" href="javascript:void(0)">
+            <area shape="poly" coords="130, 140, 130, 210, 210, 200" href="javascript:void(0)">
+        </map>
     </div>
 </body>
 </html>

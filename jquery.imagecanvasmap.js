@@ -119,6 +119,47 @@
                                     clickY[clickY.length - 1]);
                         }
                     });
+                    
+                    usemap = $this.get(0).getAttribute('usemap');
+                    if(usemap) {
+                        map = $('map[name="'+usemap.substr(1)+'"]');
+                        if($this.is('img') && usemap && map.size() > 0) {
+                            areas = map.find('area');
+                            areas.each(function() {
+                                coords = this.getAttribute('coords').split(',');
+                                for(var i = 0; i < coords.length; i++) {
+                                    coords[i] = parseFloat(coords[i]);
+                                }
+                                shape = this.getAttribute('shape').toLowerCase().substr(0,4);
+                                if(shape === 'poly') {
+                                    for(var i = 0; i < coords.length / 2; i+=2) {
+                                        context = canvas.getContext('2d');
+                                        context.beginPath();
+                                        context.moveTo(coords[0], coords[1]);
+                                        for(i=2; i < coords.length; i+=2) {
+                                            context.lineTo(coords[i], coords[i+1]);
+                                        }
+                                        context.lineWidth = 2;
+                                        context.closePath();
+                                        context.strokeStyle = 'rgb(100,149,237)';
+                                        context.stroke();
+                                    }
+                                } else if(shape === 'rect') {
+                                    context = canvas.getContext('2d');
+                                    context.beginPath();
+                                    context.moveTo(coords[0], coords[1]);
+                                    context.lineTo(coords[2], coords[1]);
+                                    context.lineTo(coords[2], coords[3]);
+                                    context.lineTo(coords[0], coords[3]);
+                                    context.lineWidth = 2;
+                                    context.closePath();
+                                    context.strokeStyle = 'rgb(100,149,237)';
+                                    context.stroke();
+                                }
+                            });
+                        }
+                    }
+                    
                     $this.data('imagecanvasmap', {
                         target : $this,
                         options : options,
@@ -152,6 +193,7 @@
 
 	$.fn.imagecanvasmap.defaults = {
         onComplete : function() {
-		}
+		}, 
+		draw : false
 	};
 })(jQuery);
