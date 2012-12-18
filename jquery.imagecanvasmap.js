@@ -66,21 +66,27 @@
                             $this.imagecanvasmap(options);
                         }, 200);
                     };
+                    
+                    wrapper = $('<div></div>').css({
+                        display:'block',
+                        background:'url("'+this.src+'")',
+                        position:'relative',
+                        padding:0,
+                        width:this.width,
+                        height:this.height
+                    });
+                    wrapper.addClass($this.attr('class'));
+                    $this.before(wrapper).css('opacity', 0).css(canvas_style).remove();
+                    if($.browser.msie) {$this.css('filter', 'Alpha(opacity=0)');}
+                    wrapper.append($this);
 
                     canvas = create_canvas_for(this);
                     $(canvas).css(canvas_style);
-                    
-                    $(canvas).offset({top: $(this).offset().top, left: $(this).offset().left});
                     canvas.height = this.height;
                     canvas.width = this.width;
                     $this.before(canvas);
-                    
-                    var $click = $(canvas);
-                    if($.browser.msie) {
-                    	$click = $(this);
-                    }
 
-                    $click.click(function(e) {
+                    wrapper.click(function(e) {
                         if (!options.draw)
                             return;
                         var x = e.pageX - this.offsetLeft;
@@ -92,10 +98,15 @@
                                 drawline(canvas, clickX[0], clickY[0],
                                         clickX[clickX.length - 1],
                                         clickY[clickY.length - 1]);
-                                options.onComplete();
+                                var coords = '';
+                                for(var i = 0; i < clickX.length; i++) {
+                                    coords += clickX[i] + ',' + clickY[i] + ",";
+                                }
+                                coords = coords.substr(0, coords.length - 1);
+                                options.onComplete(coords);
                                 return;
                             }
-                            for ( var i = 1; i < clickX.length; i++) {
+                            for (var i = 1; i < clickX.length; i++) {
                                 if (Math.abs(clickX[i] - x) < 15
                                         && Math.abs(clickY[i] - y) < 15) {
                                     return;
@@ -145,27 +156,36 @@
                                 } else if(shape === 'rect') {
                                     context = canvas.getContext('2d');
                                     context.beginPath();
-                                    context.moveTo(coords[0], coords[1]);
-                                    context.lineTo(coords[2], coords[1]);
-                                    context.lineTo(coords[2], coords[3]);
-                                    context.lineTo(coords[0], coords[3]);
+                                    context.rect(coords[0], coords[1], coords[2] - coords[0], coords[3] - coords[1]);
                                     context.lineWidth = 2;
                                     context.closePath();
                                     context.strokeStyle = 'rgb(100,149,237)';
                                     context.stroke();
                                 }
                             });
+                            
+                            if(options.mouseover) {
+                                $(map).find('area').bind('mouseover', options.mouseover);
+                            }
+                            if(options.mouseout) {
+                                $(map).find('area').bind('mouseout', options.mouseout);
+                            }
                         }
                     }
                     
                     $this.data('imagecanvasmap', {
-                        target : $this,
                         options : options,
                         clickX : clickX,
                         clickY : clickY,
                         canvas : canvas
                     });
                 }
+            });
+        },
+        draw : function() {
+            return this.each(function() {
+                var data = $(this).data('imagecanvasmap');
+                data.options.draw = true;
             });
         },
         clear : function() {
