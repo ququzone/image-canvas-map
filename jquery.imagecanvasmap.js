@@ -67,7 +67,7 @@
                         }, 200);
                     };
                     
-                    wrapper = $('<div></div>').css({
+                    var wrapper = $('<div></div>').css({
                         display:'block',
                         background:'url("'+this.src+'")',
                         position:'relative',
@@ -80,7 +80,7 @@
                     if($.browser.msie) {$this.css('filter', 'Alpha(opacity=0)');}
                     wrapper.append($this);
 
-                    canvas = create_canvas_for(this);
+                    var canvas = create_canvas_for(this);
                     $(canvas).css(canvas_style);
                     canvas.height = this.height;
                     canvas.width = this.width;
@@ -131,19 +131,19 @@
                         }
                     });
                     
-                    usemap = $this.get(0).getAttribute('usemap');
+                    var usemap = $this.get(0).getAttribute('usemap');
                     if(usemap) {
-                        map = $('map[name="'+usemap.substr(1)+'"]');
+                        var map = $('map[name="'+usemap.substr(1)+'"]');
                         if($this.is('img') && usemap && map.size() > 0) {
-                            areas = map.find('area');
+                            var areas = map.find('area');
                             areas.each(function() {
                                 coords = this.getAttribute('coords').split(',');
                                 for(var i = 0; i < coords.length; i++) {
                                     coords[i] = parseFloat(coords[i]);
                                 }
-                                shape = this.getAttribute('shape').toLowerCase().substr(0,4);
+                                var shape = this.getAttribute('shape').toLowerCase().substr(0,4);
                                 if(shape === 'poly') {
-                                    context = canvas.getContext('2d');
+                                    var context = canvas.getContext('2d');
                                     context.beginPath();
                                     context.moveTo(coords[0], coords[1]);
                                     for(i=2; i < coords.length; i+=2) {
@@ -154,7 +154,7 @@
                                     context.strokeStyle = 'rgb(100,149,237)';
                                     context.stroke();
                                 } else if(shape === 'rect') {
-                                    context = canvas.getContext('2d');
+                                    var context = canvas.getContext('2d');
                                     context.beginPath();
                                     context.rect(coords[0], coords[1], coords[2] - coords[0], coords[3] - coords[1]);
                                     context.lineWidth = 2;
@@ -164,12 +164,7 @@
                                 }
                             });
                             
-                            if(options.mouseover) {
-                                $(map).find('area').bind('mouseover', options.mouseover);
-                            }
-                            if(options.mouseout) {
-                                $(map).find('area').bind('mouseout', options.mouseout);
-                            }
+                            $(map).find('area').bind('mouseover', options.mouseover).bind('mouseout', options.mouseout);
                         }
                     }
                     
@@ -210,8 +205,9 @@
     };
 
 	$.fn.imagecanvasmap.defaults = {
-        onComplete : function() {
-		}, 
+        onComplete : function(){},
+		mouseover : function(){},
+		mouseout : function(){},
 		draw : false
 	};
 })(jQuery);
